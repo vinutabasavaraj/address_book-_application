@@ -1,0 +1,7 @@
+{
+    "metadata_config": {
+        "databaseType": "sqlite",
+        "databaseName": "D:\\address_book_assignment\\test2.db"
+    },
+    "log_location": "./qarbontech_logs"
+}

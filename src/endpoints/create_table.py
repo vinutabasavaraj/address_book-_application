@@ -30,7 +30,6 @@ async def create_tables(db_details:metadata_sqlite):
     - DatabaseName : Path to the database file.
     """
     status_value, message = check_path_permission(db_details.databaseName)
-    print(message, status_value)
     if status_value:
         try:     
 
