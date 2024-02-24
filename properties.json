@@ -3,5 +3,5 @@
         "databaseType": "sqlite",
         "databaseName": "D:\\address_book_assignment\\test2.db"
     },
-    "log_location": "./qarbontech_logs"
+    "log_location": "./address_book_logs"
 }

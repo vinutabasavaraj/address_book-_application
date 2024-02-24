@@ -7,11 +7,13 @@ import json
 from src.schemas.metadata_schema import metadata_sqlite
 from src.models.sqlite_orm_model import Base
 from .check_path_db import check_path_permission
+from src.log_management.generate_info_logs import generate_info_logs
+from src.log_management.generate_error_logs import generate_error_logs
 
 router=APIRouter(tags=["CreateTable"])
 
-cwd = Path(__file__).parents[1]
-filepath = cwd/'common'/'metadata_info.json'
+cwd = Path(__file__).parents[3]
+filepath = cwd/'common'/'properties.json'
 
 #Method to store the database details in json file
 async def metadata_configuration(new_data):
@@ -25,11 +27,16 @@ async def metadata_configuration(new_data):
 #API to create the table
 @router.post('/create_table')
 async def create_tables(db_details:metadata_sqlite):
-    """API to Create the Tables:
-    Request Body:
-    - DatabaseName : Path to the database file.
+    """API to Create the Tables:\n
+    Request Body:\n
+    - DatabaseName : Path to the database file.\n
     """
+
+    info_log = generate_info_logs('address_info')
+    error_log = generate_error_logs('address_error')
+
     status_value, message = check_path_permission(db_details.databaseName)
+    
     if status_value:
         try:     
 
@@ -45,14 +52,17 @@ async def create_tables(db_details:metadata_sqlite):
                             }
                         
             await metadata_configuration(metadata_config)
+            info_log.info("Tables created successfully.")
             return {"detail": {"message": "Tables created successfully.", "statusCode": 201, "errorCode": None}} 
         except Exception as e:
+            error_log.exception(e,exc_info=True)
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail={"message": f"Creation of tables failed: {str(e)}", "statusCode": 503, "errorCode": "errorcode"}
             )
     else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail={"message":message, "statusCode": 403})
+        error_log.error(str(message))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"message":message, "statusCode": 404})
         
 
 
