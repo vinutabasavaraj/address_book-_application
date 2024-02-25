@@ -19,7 +19,6 @@ def generate_info_logs(log_name):
     properties
     
     log_dir_location = current_directory_path/properties.get("log_location")
-    print("log_dir_location ",log_dir_location)
 
     log_dir_location.mkdir(parents=True, exist_ok=True)
     

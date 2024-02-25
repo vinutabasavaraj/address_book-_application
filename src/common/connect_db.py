@@ -12,10 +12,10 @@ Base = declarative_base()
 def get_db():
     global engine, Session
     
-    cwd = Path(__file__).parents[1]
-    filename = cwd/'common'/'metadata_info.json'
+    current_directory_path = Path(__file__).parents[2]
+    properties_filename = current_directory_path/'properties.json'
     
-    with open(filename) as fp:
+    with open(properties_filename) as fp:
         properties = json.load(fp)
 
     properties

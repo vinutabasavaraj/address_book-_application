@@ -12,12 +12,12 @@ from src.log_management.generate_error_logs import generate_error_logs
 
 router=APIRouter(tags=["CreateTable"])
 
-cwd = Path(__file__).parents[3]
-filepath = cwd/'common'/'properties.json'
+current_directory_path = Path(__file__).parents[2]
+properties_filename = current_directory_path/'properties.json'
 
 #Method to store the database details in json file
 async def metadata_configuration(new_data):
-    with open(filepath,'r+',encoding='utf-8') as file:
+    with open(properties_filename,'r+',encoding='utf-8') as file:
         file_data = json.load(file)
         file_data["metadata_config"]=new_data
         file.seek(0)
@@ -36,10 +36,9 @@ async def create_tables(db_details:metadata_sqlite):
     error_log = generate_error_logs('address_error')
 
     status_value, message = check_path_permission(db_details.databaseName)
-    
     if status_value:
         try:     
-
+            
             SQLALCHEMY_DATABASE_URL = "sqlite:///" +  db_details.databaseName
             engine = create_engine(SQLALCHEMY_DATABASE_URL,pool_size=20, max_overflow=0)
             engine.connect()

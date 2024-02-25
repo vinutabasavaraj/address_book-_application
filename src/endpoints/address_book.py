@@ -84,7 +84,7 @@ async def update_address(address_id: int,db: Session = Depends(get_db)):
         try:
             response = await delete_address_book(address_id, db)
             info_log.info("Address deleted successfully")
-            return {"detail": {"message": "Address deleted successfully", "data": response, "statusCode": 200}}
+            return {"detail": {"message": "Address deleted successfully","statusCode": 200}}
         except Exception as e:
             error_log.exception(str(e),exc_info=True)
             raise HTTPException(

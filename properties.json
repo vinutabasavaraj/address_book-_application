@@ -1,7 +1,7 @@
 {
     "metadata_config": {
         "databaseType": "sqlite",
-        "databaseName": "D:\\address_book_assignment\\test2.db"
+        "databaseName": ""
     },
     "log_location": "./address_book_logs"
 }
