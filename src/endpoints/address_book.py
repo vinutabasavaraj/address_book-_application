@@ -57,7 +57,7 @@ async def update_address(address_id: int,info:address,db: Session = Depends(get_
     error_log = generate_error_logs('address_error')
     address_details = db.query(AddressModel).filter(AddressModel.id == address_id).first()
     if address_details is None:
-        error_log.error(f"'{address_id}' Id not found")
+        error_log.error(f"Id '{address_id}' not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"message":f"'{address_id}' Id not found", "statusCode": 404})
 
     else:
@@ -72,13 +72,13 @@ async def update_address(address_id: int,info:address,db: Session = Depends(get_
                 detail={"message": {str(e)}, "statusCode": 500})
         
 @router.delete("/address/{address_id}")
-async def update_address(address_id: int,db: Session = Depends(get_db)):
+async def delete_address(address_id: int,db: Session = Depends(get_db)):
     '''API to remove an Address'''
     info_log = generate_info_logs('address_info')
     error_log = generate_error_logs('address_error')
     address_details = db.query(AddressModel).filter(AddressModel.id == address_id).first()
     if address_details is None:
-        error_log.error(f"'{address_id}' Id not found")
+        error_log.error(f"Id '{address_id}' not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"message":f"'{address_id}' Id not found", "statusCode": 404})
     else:
         try:
@@ -93,18 +93,26 @@ async def update_address(address_id: int,db: Session = Depends(get_db)):
 
 
 @router.get("/address")
-async def get_addresses_within_distance(latitude: float = Query(..., description="Latitude of the location"),
-                                  longitude: float = Query(..., description="Longitude of the location"),
-                                  distance: float = Query(..., description="Maximum distance in kilometers"),db: Session = Depends(get_db)):
+async def get_addresses_within_distance(latitude: float = Query(..., description="Latitude of the location", ge=-90, le=90),
+                                  longitude: float = Query(..., description="Longitude of the location", ge=-180, le=180),
+                                  distance: float = Query(..., description="Maximum distance in kilometers", ge=0.0),db: Session = Depends(get_db)):
     info_log = generate_info_logs('address_info')
     error_log = generate_error_logs('address_error')
     address_details = db.query(AddressModel).all()
     if address_details == []:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"message":"Id not found", "statusCode": 404})
+        error_log.error("Address details not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"message":"Address details not found", "statusCode": 404})
     else:
         try:
+            info_log.info("Fetched data successfully from database")
             response = await get_address_book_details(address_details,latitude,longitude,distance)
-            return {"detail": {"message": "Address deleted successfully", "data": response, "statusCode": 200}}
+            if response !=[]:
+                info_log.info("The address has been successfully retrieved based on the provided criteria.")
+                return {"detail": {"message": "The address has been successfully retrieved based on the provided criteria.", "data": response, "statusCode": 200}}
+            else:
+                info_log.info("No matching results found for the provided criteria.")
+                return {"detail": {"message": "No matching results found for the provided criteria.", "data": response, "statusCode": 200}}
+
         except Exception as e:
             error_log.exception(str(e),exc_info=True)
             raise HTTPException(

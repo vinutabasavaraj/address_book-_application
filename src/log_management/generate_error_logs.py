@@ -8,8 +8,16 @@ from datetime import datetime
 
 def generate_error_logs(log_name):
     """
-    Function to create errror logs for Address Application.
+    Generates error logs with the specified log name.
+
+    Parameters:
+        log_name (str): The name of the log.
+
+    Returns:
+        logger (logging.Logger): The logger object configured to log errors.
     """
+
+    # Define the format for log messages
     message_format = logging.Formatter('%(asctime)s %(filename)s -> %(funcName)s() : %(lineno)s %(levelname)s: %(message)s')
 
     current_directory_path = Path(__file__).parents[2]
@@ -28,7 +36,8 @@ def generate_error_logs(log_name):
     file_name = f'{log_name}_{dt_string}.log'
 
     log_filename = str(log_dir_location / file_name)
-    
+
+    # Create a logger object and configure it to log errors to the specified file
     logger = logging.getLogger(log_filename)
     if logger.handlers:
         return logger

@@ -9,6 +9,8 @@ def generate_info_logs(log_name):
     """
     Function to create info logs for Address Application.
     """
+
+    # Define the format for log messages
     message_format = logging.Formatter('%(asctime)s %(filename)s -> %(funcName)s() : %(lineno)s %(levelname)s: %(message)s')
 
     current_directory_path = Path(__file__).parents[2]
@@ -28,6 +30,7 @@ def generate_info_logs(log_name):
 
     log_filename = str(log_dir_location / file_name)
     
+    # Create a logger object and configure it to log info messages to the specified file
     logger = logging.getLogger(log_filename)
     if logger.handlers:
         return logger

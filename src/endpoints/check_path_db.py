@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 
-def check_path_permission(path):
+def path_validation(path):
     # Create a Path object from the given path
     path_obj = Path(path)
     

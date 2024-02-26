@@ -6,7 +6,7 @@ import json
 
 from src.schemas.metadata_schema import metadata_sqlite
 from src.models.sqlite_orm_model import Base
-from .check_path_db import check_path_permission
+from .check_path_db import path_validation
 from src.log_management.generate_info_logs import generate_info_logs
 from src.log_management.generate_error_logs import generate_error_logs
 
@@ -35,12 +35,12 @@ async def create_tables(db_details:metadata_sqlite):
     info_log = generate_info_logs('address_info')
     error_log = generate_error_logs('address_error')
 
-    status_value, message = check_path_permission(db_details.databaseName)
+    status_value, message = path_validation(db_details.databaseName)
     if status_value:
         try:     
             
             SQLALCHEMY_DATABASE_URL = "sqlite:///" +  db_details.databaseName
-            engine = create_engine(SQLALCHEMY_DATABASE_URL,pool_size=20, max_overflow=0)
+            engine = create_engine(SQLALCHEMY_DATABASE_URL)
             engine.connect()
             
             Base.metadata.create_all(engine)

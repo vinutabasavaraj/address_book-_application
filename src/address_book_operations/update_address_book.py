@@ -1,7 +1,7 @@
 from fastapi import HTTPException,status
 from src.models.sqlite_orm_model import AddressModel
 
-
+# Method to update the specified address
 async def update_address_book(info,address_id, db):
     try:
         db.query(AddressModel).filter(AddressModel.id == address_id).\
