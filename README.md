@@ -10,9 +10,9 @@ Validate address data before saving
 Retrieve addresses within a given distance from a specified location
 
 # Technologies Used
-Python
-FastAPI
-SQLite
+- Python
+- FastAPI
+- SQLite
 
 # Setup Instructions
 1. Clone the repository to your local machine.
